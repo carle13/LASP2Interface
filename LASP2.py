@@ -1,10 +1,13 @@
 import os
 import sys
 import configparser
+# from mpi4py import MPI
 import signal
 import subprocess
 import time
 from interfaceN2P2 import training
+import interfaceLAMMPS
+import interfaceVASP
 
 def readLASP2():
     global lasp2
@@ -74,6 +77,11 @@ def readVASP():
             except:
                 print('Invalid value for variable: ' +key)
 
+# # MPI variables and set COMM_WORLD as communicator
+# comm = MPI.COMM_WORLD
+# rank = comm.Get_rank()
+# nprocs = comm.Get_size()
+
 # Read input from lasp2.ini or another file indicated by the user
 inputFile = 'lasp2.ini'
 for i in range(len(sys.argv)):
@@ -118,16 +126,15 @@ os.makedirs(potDirs, exist_ok=True)
 os.makedirs(outDirs, exist_ok=True)
 potInitial = 'PotentialsComplete/'
 os.system('cp -r '+potInitial+' '+potDirs+'Potentials')
+
 trainings = 1
 
-exitCode = os.system('mpirun -n 16 python3 interfaceLAMMPS.py '+str(os.getpid())+' start')
-print('LAMMPS exited with code')
-print(exitCode)
 while True:
-    if exitCode == 12800:
-        print('Performing training')
-        #training(potDirs, trainings)
+    if not interfaceLAMMPS.simulate():
+        training(potDirs, trainings)
         trainings += 1
-        exitCode = os.system('mpirun -n 16 python3 interfaceLAMMPS.py '+str(os.getpid())+' restart')
     else:
         break
+
+# End of the program
+# MPI.Finalize()

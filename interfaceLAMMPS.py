@@ -51,10 +51,7 @@ def check():
         # Wait for message to know that it is ok to continue
         message = comm.recv(source = 0, tag = rank)
         if message == 1:
-            lmp.command('write_restart Restart/tmp.restart')
-            MPI.Finalize()
-            exit()
-    
+            return True
     if rank == 0:
         disagreement.append(disag)
         # Flag activation
@@ -73,54 +70,8 @@ def check():
         for i in range(1, nprocs):
             comm.send(message, dest=i, tag=i)
         if disag > threshold:
-            lmp.command('write_restart Restart/tmp.restart')
-            
-            np.save('Restart/sections.npy', np.array(sections, dtype=object))
-            MPI.Finalize()
-            exit(50)
-    return disag
-
-def initialize():
-    # Main LAMMPS object to carry on the simulation
-    lmp.command('units metal')
-    lmp.command('boundary p p p')
-    lmp.command('read_data '+dataDir)
-
-    # Setup n2p2 potential
-    lmp.command('pair_style hdnnp 6.0 dir '+potDir+'/Seed'+str(potentialSeed)+' showew no showewsum 100 resetew no maxew 10000000 cflength 1.0 cfenergy 1.0')
-    lmp.command('pair_coeff * * Au')
-
-    # Read commands for the simulation to be performed
-    lmp.file('input.lmp')
-    lmp.command('run 0')
-
-def restart():
-    global sections
-    global startPoint
-    global pe
-    global threshold
-    threshold = 0.2 ################################################## TEST #################################
-    lmp.command('read_restart Restart/tmp.restart')
-    if rank == 0:
-        sections = np.load('Restart/sections.npy', allow_pickle=True)
-        sections = list(sections)
-        for i in range(len(sections)):
-            startPoint += len(sections[i])
-        startPoint -= (len(sections))
-        for i in range(1, nprocs):
-            comm.send(startPoint, dest=i, tag=i)
-    else:
-        startPoint = comm.recv(source = 0, tag = rank)
-    
-    # Setup n2p2 potential
-    lmp.command('pair_style hdnnp 6.0 dir '+potDir+'/Seed'+str(potentialSeed)+' showew no showewsum 100 resetew no maxew 10000000 cflength 1.0 cfenergy 1.0')
-    lmp.command('pair_coeff * * Au')
-
-    # Read commands for the simulation to be performed
-    lmp.file('restart.lmp')
-    lmp.command('run 0')
-    pe = lmp.get_thermo("pe")
-    #check()
+            return True
+    return False
 
 # MPI variables and set COMM_WORLD as communicator
 comm = MPI.COMM_WORLD
@@ -131,8 +82,21 @@ potentialSeed = 1 #Potential used for main simulation
 dataDir = 'Au100Messy.data' #Location of the structure being simulated
 potDir = 'PotentialsComplete' ############################### TEST ####################################
 #potDir = 'Training/Potentials'
+
+# Main LAMMPS object to carry on the simulation
 lmp = lammps.lammps()
-os.makedirs('Restart', exist_ok=True)
+lmp.command('units metal')
+lmp.command('boundary p p p')
+lmp.command('read_data '+dataDir)
+
+# Setup n2p2 potential
+lmp.command('pair_style hdnnp 6.0 dir '+potDir+'/Seed'+str(potentialSeed)+' showew no showewsum 100 resetew no maxew 10000000 cflength 1.0 cfenergy 1.0')
+lmp.command('pair_coeff * * Au')
+
+# Read commands for the simulation to be performed
+lmp.file('input.lmp')
+lmp.command('run 0')
+pe = lmp.get_thermo("pe")
 
 # Training variables
 disagreement = []
@@ -143,53 +107,51 @@ checkEvery = 100 #Number of steps after which the agreement will be measured
 checkSteps = int(totalSteps / checkEvery) #Number of times the agreement will be measured
 startPoint = 0
 
-# Get process id of parent to send back signals
-parentId = int(sys.argv[1])
-# Check if the simulation is being restarted after training
-if sys.argv[2] == 'start':
-    initialize()
-elif sys.argv[2] == 'restart':
-    restart()
+def simulate():
+    global startPoint
+    global pe
+    # Simulation loop
+    for a in range(startPoint, checkSteps):
+        # Save the structure
+        lmp.command('write_data check.data')
+        #################### TEST DATA
+        lmp.command('write_dump all custom train.lammpstrj id type x y z fx fy fz modify sort id')
+        #############################
 
-# Simulation loop
-for a in range(startPoint, checkSteps):
-    # Save the structure
+        # Measure agreement
+        flag = check()
+        if flag:
+            startPoint = a
+            return False
+
+        # Advance the simulation
+        lmp.command('run '+str(checkEvery))
+        pe = lmp.get_thermo("pe")
+
+    # Measure agreement of last structure in the simulation
     lmp.command('write_data check.data')
-    #################### TEST DATA
-    lmp.command('write_dump all custom train.lammpstrj id type x y z fx fy fz modify sort id')
-    #############################
+    flag = check()
+    if flag:
+        return False
+    sections.append(disagreement.copy())
 
-    # Measure agreement
-    disag = check()
+    # Plotting disagreement over time (Only on rank 0)
+    if rank == 0:
+        plt.rcParams["axes.prop_cycle"] = plt.cycler("color", plt.cm.Dark2.colors)
+        fig, ax1 = plt.subplots()
 
-    # Advance the simulation
-    lmp.command('run '+str(checkEvery))
-    pe = lmp.get_thermo("pe")
+        ax1.set_title('Evolution (100) Au (T = 1000)')
+        ax1.set_ylabel('Disagreement')
+        ax1.set_xlabel('Timestep')
 
-# Measure agreement of last structure in the simulation
-lmp.command('write_data check.data')
-disag = check()
-sections.append(disagreement.copy())
+        x = []
+        for i in range(len(sections)):
+            x.append((np.arange(len(sections[i])))*checkEvery)
+            if i > 0:
+                x[i] += x[i-1][-1]
+            ax1.plot(x[i], sections[i], marker='o', ls=':')
+        ax1.axhline(threshold, ls='--', color='black')
 
-# Plotting disagreement over time (Only on rank 0)
-if rank == 0:
-    plt.rcParams["axes.prop_cycle"] = plt.cycler("color", plt.cm.Dark2.colors)
-    fig, ax1 = plt.subplots()
-
-    ax1.set_title('Evolution (100) Au (T = 1000)')
-    ax1.set_ylabel('Disagreement')
-    ax1.set_xlabel('Timestep')
-
-    x = []
-    for i in range(len(sections)):
-        x.append((np.arange(len(sections[i])))*checkEvery)
-        if i > 0:
-            x[i] += x[i-1][-1]
-        ax1.plot(x[i], sections[i], marker='o', ls=':')
-    ax1.axhline(threshold, ls='--', color='black')
-
-    fig.savefig('timeAgreement.png')
-    print('Finished')
-
-# End of the program
-MPI.Finalize()
+        fig.savefig('timeAgreement.png')
+        print('Finished')
+    return True

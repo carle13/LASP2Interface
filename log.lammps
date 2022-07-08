@@ -1,27 +1,25 @@
 LAMMPS (23 Jun 2022)
 OMP_NUM_THREADS environment is not set. Defaulting to 1 thread. (src/comm.cpp:98)
   using 1 OpenMP thread(s) per MPI task
-read_restart Restart/tmp.restart
-Reading restart file ...
-  restart file = 23 Jun 2022, LAMMPS = 23 Jun 2022
-  restoring atom style atomic from restart
+units metal
+boundary p p p
+read_data Au100Messy.data
+Reading data file ...
   orthogonal box = (0 0 0) to (12.522 12.522 35.728673)
   2 by 2 by 4 MPI processor grid
-  pair style hdnnp stores no restart info
+  reading atoms ...
   144 atoms
-  read_restart CPU = 0.273 seconds
+  read_data CPU = 0.431 seconds
 pair_style hdnnp 6.0 dir PotentialsComplete/Seed1 showew no showewsum 100 resetew no maxew 10000000 cflength 1.0 cfenergy 1.0
 pair_coeff * * Au
 neighbor	0.3 bin
 neigh_modify	every 20 delay 0 check no
 
-#velocity	all create 1000.0 87287
+velocity	all create 1000.0 87287
 fix 1 all nvt temp 1000.0 1000.0 0.1
-Resetting global fix info from restart file:
-  fix style: nvt, fix ID: 1
 
-#dump              myDump all custom 10  dump.lammpstrj id type x y z fx fy fz
-#dump_modify    	  myDump sort id
+dump              myDump all custom 10  dump.lammpstrj id type x y z fx fy fz
+dump_modify    	  myDump sort id
 
 #dump		id all atom 50 dump.melt
 
@@ -411,7 +409,6 @@ LAMMPS type  |  NNP element
 
 NNP setup for LAMMPS completed.
 *******************************************************************************
-All restart file global fix info was re-assigned
 Neighbor list info ...
   update every 20 steps, delay 0 steps, check no
   max neighbors/atom: 2000, page size: 100000
@@ -424,13 +421,13 @@ Neighbor list info ...
       pair build: full/bin/atomonly
       stencil: full/bin/3d
       bin: standard
-### NNP EW SUMMARY ### TS:        600 EW          0 EWPERSTEP  0.000e+00
-Per MPI rank memory allocation (min/avg/max) = 2.45 | 2.545 | 2.577 Mbytes
+### NNP EW SUMMARY ### TS:          0 EW          0 EWPERSTEP  0.000e+00
+Per MPI rank memory allocation (min/avg/max) = 3.718 | 3.812 | 3.845 Mbytes
    Step          Temp          E_pair         E_mol          TotEng         Press     
-       600   1025.3138     -429.27477      0             -410.32267      232.82999    
-Loop time of 0.000794825 on 16 procs for 0 steps with 144 atoms
+         0   1000          -433.06116      0             -414.57695      1562.1841    
+Loop time of 0.000131069 on 16 procs for 0 steps with 144 atoms
 
-81.4% CPU use with 16 MPI tasks x 1 OpenMP threads
+81.8% CPU use with 16 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
@@ -440,7 +437,289 @@ Neigh   | 0          | 0          | 0          |   0.0 |  0.00
 Comm    | 0          | 0          | 0          |   0.0 |  0.00
 Output  | 0          | 0          | 0          |   0.0 |  0.00
 Modify  | 0          | 0          | 0          |   0.0 |  0.00
-Other   |            | 0.0007948  |            |       |100.00
+Other   |            | 0.0001311  |            |       |100.00
+
+Nlocal:              9 ave          21 max           0 min
+Histogram: 4 3 1 0 0 1 1 2 3 1
+Nghost:        193.688 ave         316 max          80 min
+Histogram: 4 0 3 1 0 0 4 0 0 4
+Neighs:              0 ave           0 max           0 min
+Histogram: 16 0 0 0 0 0 0 0 0 0
+FullNghs:          427 ave        1104 max           0 min
+Histogram: 5 3 0 0 1 1 2 1 2 1
+
+Total # of neighbors = 6832
+Ave neighs/atom = 47.444444
+Neighbor list builds = 0
+Dangerous builds not checked
+write_data check.data
+System init for write_data ...
+write_dump all custom train.lammpstrj id type x y z fx fy fz modify sort id
+run 100
+### NNP EW SUMMARY ### TS:          0 EW          0 EWPERSTEP  0.000e+00
+Per MPI rank memory allocation (min/avg/max) = 3.718 | 3.812 | 3.845 Mbytes
+   Step          Temp          E_pair         E_mol          TotEng         Press     
+         0   1000          -433.06116      0             -414.57695      1562.1841    
+        10   1031.4509     -433.64455      0             -414.57901      1030.8514    
+        20   1059.2349     -434.17235      0             -414.59324      574.16841    
+        30   1079.1463     -434.57868      0             -414.63152      276.90213    
+        40   1088.4582     -434.82269      0             -414.70341      182.19331    
+        50   1085.2228     -434.87381      0             -414.81434      308.44584    
+        60   1068.328      -434.71126      0             -414.96407      661.63569    
+        70   1038.151      -434.33514      0             -415.14575      1227.5707    
+        80   997.74925     -433.78904      0             -415.34645      1946.0234    
+        90   953.8665      -433.18133      0             -415.54987      2693.115     
+### NNP EW SUMMARY ### TS:        100 EW          0 EWPERSTEP  0.000e+00
+       100   916.12263     -432.67461      0             -415.74081      3298.9244    
+Loop time of 8.05308 on 16 procs for 100 steps with 144 atoms
+
+Performance: 1.073 ns/day, 22.370 hours/ns, 12.418 timesteps/s
+60.3% CPU use with 16 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.0007793  | 1.6872     | 5.7717     | 132.4 | 20.95
+Neigh   | 4.37e-05   | 0.00023216 | 0.0004949  |   0.0 |  0.00
+Comm    | 1.4635     | 4.0367     | 6.647      |  91.0 | 50.13
+Output  | 0.33527    | 0.36917    | 0.38699    |   2.2 |  4.58
+Modify  | 0.42304    | 1.9584     | 6.2219     | 162.5 | 24.32
+Other   |            | 0.001422   |            |       |  0.02
+
+Nlocal:              9 ave          20 max           0 min
+Histogram: 4 1 3 0 0 0 3 1 1 3
+Nghost:        193.875 ave         306 max          81 min
+Histogram: 4 0 1 3 0 0 3 1 0 4
+Neighs:              0 ave           0 max           0 min
+Histogram: 16 0 0 0 0 0 0 0 0 0
+FullNghs:       427.75 ave        1041 max           0 min
+Histogram: 5 3 0 0 0 3 1 0 2 2
+
+Total # of neighbors = 6844
+Ave neighs/atom = 47.527778
+Neighbor list builds = 5
+Dangerous builds not checked
+write_data check.data
+System init for write_data ...
+write_dump all custom train.lammpstrj id type x y z fx fy fz modify sort id
+run 100
+### NNP EW SUMMARY ### TS:        100 EW          0 EWPERSTEP  0.000e+00
+Per MPI rank memory allocation (min/avg/max) = 3.718 | 3.813 | 3.845 Mbytes
+   Step          Temp          E_pair         E_mol          TotEng         Press     
+       100   916.12263     -432.67461      0             -415.74081      3298.9244    
+       110   893.70229     -432.42852      0             -415.90915      3602.8174    
+       120   890.96983     -432.51999      0             -416.05113      3531.3697    
+       130   904.55203     -432.88813      0             -416.16821      3143.9823    
+       140   924.70909     -433.35743      0             -416.26492      2596.2223    
+       150   941.20967     -433.74417      0             -416.34666      2064.6776    
+       160   949.52978     -433.96914      0             -416.41784      1658.1134    
+       170   952.32814     -434.08389      0             -416.48087      1369.5269    
+       180   955.21546     -434.19325      0             -416.53685      1122.7414    
+       190   960.68957     -434.3445       0             -416.58692      867.29398    
+### NNP EW SUMMARY ### TS:        200 EW          0 EWPERSTEP  0.000e+00
+       200   966.16067     -434.49143      0             -416.63272      633.42477    
+Loop time of 9.02254 on 16 procs for 100 steps with 144 atoms
+
+Performance: 0.958 ns/day, 25.063 hours/ns, 11.083 timesteps/s
+63.7% CPU use with 16 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.0008369  | 1.9052     | 4.5505     | 130.6 | 21.12
+Neigh   | 4.74e-05   | 0.00030089 | 0.0006124  |   0.0 |  0.00
+Comm    | 1.7062     | 4.2769     | 7.0836     |  90.3 | 47.40
+Output  | 0.68849    | 0.72522    | 0.74706    |   2.2 |  8.04
+Modify  | 0.60469    | 2.1135     | 6.6257     | 162.0 | 23.42
+Other   |            | 0.001419   |            |       |  0.02
+
+Nlocal:              9 ave          19 max           0 min
+Histogram: 4 1 2 1 0 0 2 2 1 3
+Nghost:        191.062 ave         302 max          80 min
+Histogram: 4 0 0 4 0 0 3 1 0 4
+Neighs:              0 ave           0 max           0 min
+Histogram: 16 0 0 0 0 0 0 0 0 0
+FullNghs:      427.625 ave         986 max           0 min
+Histogram: 5 3 0 0 0 1 3 0 1 3
+
+Total # of neighbors = 6842
+Ave neighs/atom = 47.513889
+Neighbor list builds = 5
+Dangerous builds not checked
+write_data check.data
+System init for write_data ...
+write_dump all custom train.lammpstrj id type x y z fx fy fz modify sort id
+run 100
+### NNP EW SUMMARY ### TS:        200 EW          0 EWPERSTEP  0.000e+00
+Per MPI rank memory allocation (min/avg/max) = 3.718 | 3.813 | 3.845 Mbytes
+   Step          Temp          E_pair         E_mol          TotEng         Press     
+       200   966.16067     -434.49143      0             -416.63272      633.42477    
+       210   967.07121     -434.55119      0             -416.67565      502.98158    
+       220   960.1305      -434.46249      0             -416.71525      553.34215    
+       230   944.07687     -434.19817      0             -416.74767      805.79068    
+       240   920.06095     -433.77159      0             -416.765        1201.768     
+       250   893.20514     -433.26614      0             -416.75596      1612.9925    
+       260   872.90261     -432.8429       0             -416.70799      1871.6129    
+       270   868.29839     -432.65929      0             -416.60949      1851.6686    
+       280   882.03485     -432.75527      0             -416.45156      1538.9933    
+       290   909.43544     -433.04052      0             -416.23033      1011.0361    
+### NNP EW SUMMARY ### TS:        300 EW          0 EWPERSTEP  0.000e+00
+       300   942.87824     -433.37819      0             -415.94984      393.4195     
+Loop time of 8.84125 on 16 procs for 100 steps with 144 atoms
+
+Performance: 0.977 ns/day, 24.559 hours/ns, 11.311 timesteps/s
+65.1% CPU use with 16 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.0008283  | 1.9544     | 5.4069     | 136.2 | 22.11
+Neigh   | 5.53e-05   | 0.00040355 | 0.0011047  |   0.0 |  0.00
+Comm    | 1.6983     | 3.9394     | 6.75       |  91.2 | 44.56
+Output  | 1.2584     | 1.2942     | 1.3291     |   1.3 | 14.64
+Modify  | 0.26814    | 1.6511     | 5.5742     | 164.5 | 18.67
+Other   |            | 0.001723   |            |       |  0.02
+
+Nlocal:              9 ave          20 max           0 min
+Histogram: 4 0 4 0 0 0 3 1 1 3
+Nghost:        193.312 ave         310 max          80 min
+Histogram: 4 0 0 4 0 0 4 0 0 4
+Neighs:              0 ave           0 max           0 min
+Histogram: 16 0 0 0 0 0 0 0 0 0
+FullNghs:      424.375 ave        1033 max           0 min
+Histogram: 4 4 0 0 0 3 0 2 0 3
+
+Total # of neighbors = 6790
+Ave neighs/atom = 47.152778
+Neighbor list builds = 5
+Dangerous builds not checked
+write_data check.data
+System init for write_data ...
+write_dump all custom train.lammpstrj id type x y z fx fy fz modify sort id
+run 100
+### NNP EW SUMMARY ### TS:        300 EW          0 EWPERSTEP  0.000e+00
+Per MPI rank memory allocation (min/avg/max) = 3.718 | 3.813 | 3.845 Mbytes
+   Step          Temp          E_pair         E_mol          TotEng         Press     
+       300   942.87824     -433.37819      0             -415.94984      393.4195     
+       310   974.98475     -433.64521      0             -415.6234      -159.91735    
+       320   998.57598     -433.72945      0             -415.27157     -494.3389     
+       330   1007.5965     -433.54148      0             -414.91687     -510.00364    
+       340   1000.5137     -433.07045      0             -414.57676     -215.95264    
+       350   982.24874     -432.41506      0             -414.25898      261.10864    
+       360   962.16326     -431.74682      0             -413.962        723.25863    
+       370   949.48555     -431.22993      0             -413.67945      982.66652    
+       380   948.70713     -430.94113      0             -413.40503      951.95271    
+       390   957.56109     -430.83565      0             -413.1359       674.16646    
+### NNP EW SUMMARY ### TS:        400 EW          0 EWPERSTEP  0.000e+00
+       400   969.47339     -430.79326      0             -412.87332      270.89972    
+Loop time of 8.28851 on 16 procs for 100 steps with 144 atoms
+
+Performance: 1.042 ns/day, 23.024 hours/ns, 12.065 timesteps/s
+63.4% CPU use with 16 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.0008034  | 1.6331     | 4.5215     | 117.9 | 19.70
+Neigh   | 5.74e-05   | 0.00033789 | 0.0007754  |   0.0 |  0.00
+Comm    | 1.1949     | 3.2257     | 5.4185     |  76.7 | 38.92
+Output  | 1.9446     | 2.0148     | 2.0645     |   1.9 | 24.31
+Modify  | 0.35736    | 1.4131     | 4.391      | 138.1 | 17.05
+Other   |            | 0.001493   |            |       |  0.02
+
+Nlocal:              9 ave          23 max           0 min
+Histogram: 5 1 2 0 0 2 4 0 1 1
+Nghost:        188.625 ave         304 max          78 min
+Histogram: 4 0 2 2 0 0 3 1 0 4
+Neighs:              0 ave           0 max           0 min
+Histogram: 16 0 0 0 0 0 0 0 0 0
+FullNghs:          421 ave        1179 max           0 min
+Histogram: 5 3 0 0 2 2 1 1 1 1
+
+Total # of neighbors = 6736
+Ave neighs/atom = 46.777778
+Neighbor list builds = 5
+Dangerous builds not checked
+write_data check.data
+System init for write_data ...
+write_dump all custom train.lammpstrj id type x y z fx fy fz modify sort id
+run 100
+### NNP EW SUMMARY ### TS:        400 EW          0 EWPERSTEP  0.000e+00
+Per MPI rank memory allocation (min/avg/max) = 3.718 | 3.813 | 3.845 Mbytes
+   Step          Temp          E_pair         E_mol          TotEng         Press     
+       400   969.47339     -430.79326      0             -412.87332      270.89972    
+       410   978.75419     -430.71237      0             -412.62089     -143.01274    
+       420   983.84961     -430.56727      0             -412.3816      -518.40426    
+       430   986.38228     -430.38885      0             -412.15637     -853.87442    
+       440   988.05658     -430.20781      0             -411.94437     -1154.313     
+       450   989.24289     -430.02951      0             -411.74415     -1416.3912    
+       460   990.71549     -429.86668      0             -411.5541      -1645.8522    
+       470   995.60356     -429.77563      0             -411.37269     -1874.1359    
+       480   1007.6114     -429.82418      0             -411.19928     -2133.7995    
+       490   1026.1274     -430.00276      0             -411.03561     -2398.4033    
+### NNP EW SUMMARY ### TS:        500 EW          0 EWPERSTEP  0.000e+00
+       500   1044.4493     -430.19225      0             -410.88644     -2570.2915    
+Loop time of 8.04176 on 16 procs for 100 steps with 144 atoms
+
+Performance: 1.074 ns/day, 22.338 hours/ns, 12.435 timesteps/s
+60.8% CPU use with 16 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.0007382  | 1.5618     | 4.1391     | 119.9 | 19.42
+Neigh   | 4.33e-05   | 0.00035551 | 0.0007316  |   0.0 |  0.00
+Comm    | 1.2105     | 3.8201     | 6.6199     |  95.2 | 47.50
+Output  | 0.64818    | 0.67254    | 0.69695    |   1.8 |  8.36
+Modify  | 0.51212    | 1.9847     | 6.18       | 157.0 | 24.68
+Other   |            | 0.002349   |            |       |  0.03
+
+Nlocal:              9 ave          19 max           0 min
+Histogram: 4 2 0 2 0 1 0 3 2 2
+Nghost:        187.875 ave         291 max          78 min
+Histogram: 4 0 0 4 0 0 1 3 0 4
+Neighs:              0 ave           0 max           0 min
+Histogram: 16 0 0 0 0 0 0 0 0 0
+FullNghs:       417.25 ave         972 max           0 min
+Histogram: 5 2 1 0 0 1 3 0 2 2
+
+Total # of neighbors = 6676
+Ave neighs/atom = 46.361111
+Neighbor list builds = 5
+Dangerous builds not checked
+write_data check.data
+System init for write_data ...
+write_dump all custom train.lammpstrj id type x y z fx fy fz modify sort id
+run 100
+### NNP EW SUMMARY ### TS:        500 EW          0 EWPERSTEP  0.000e+00
+Per MPI rank memory allocation (min/avg/max) = 3.718 | 3.813 | 3.845 Mbytes
+   Step          Temp          E_pair         E_mol          TotEng         Press     
+       500   1044.4493     -430.19225      0             -410.88644     -2570.2915    
+       510   1054.962      -430.25786      0             -410.75773     -2539.0427    
+       520   1055.4711     -430.16273      0             -410.65319     -2270.4428    
+       530   1048.9017     -429.96062      0             -410.57252     -1821.3503    
+       540   1038.5936     -429.70987      0             -410.51229     -1273.159     
+       550   1026.4542     -429.44085      0             -410.46767     -691.73133    
+       560   1014.1772     -429.17963      0             -410.43337     -138.78004    
+       570   1004.3629     -428.96922      0             -410.40438      307.18676    
+       580   1000.887      -428.87733      0             -410.37673      549.90519    
+       590   1007.6552     -428.97452      0             -410.34882      520.7477     
+### NNP EW SUMMARY ### TS:        600 EW          0 EWPERSTEP  0.000e+00
+       600   1025.3138     -429.27477      0             -410.32267      232.82999    
+Loop time of 9.26504 on 16 procs for 100 steps with 144 atoms
+
+Performance: 0.933 ns/day, 25.736 hours/ns, 10.793 timesteps/s
+64.8% CPU use with 16 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.0009247  | 2.0011     | 5.7047     | 132.7 | 21.60
+Neigh   | 5.23e-05   | 0.00041538 | 0.000815   |   0.0 |  0.00
+Comm    | 2.066      | 4.4591     | 7.2959     |  83.6 | 48.13
+Output  | 0.95923    | 1.0011     | 1.0271     |   2.1 | 10.81
+Modify  | 0.28507    | 1.8007     | 6.0387     | 168.0 | 19.44
+Other   |            | 0.002617   |            |       |  0.03
 
 Nlocal:              9 ave          20 max           0 min
 Histogram: 4 2 0 2 0 0 2 3 1 2
@@ -453,196 +732,5 @@ Histogram: 5 2 1 0 0 2 2 2 0 2
 
 Total # of neighbors = 6640
 Ave neighs/atom = 46.111111
-Neighbor list builds = 0
-Dangerous builds not checked
-write_data check.data
-System init for write_data ...
-write_dump all custom train.lammpstrj id type x y z fx fy fz modify sort id
-run 100
-### NNP EW SUMMARY ### TS:        600 EW          0 EWPERSTEP  0.000e+00
-Per MPI rank memory allocation (min/avg/max) = 2.45 | 2.545 | 2.577 Mbytes
-   Step          Temp          E_pair         E_mol          TotEng         Press     
-       600   1025.3138     -429.27477      0             -410.32267      232.82999    
-       610   1049.7089     -429.70777      0             -410.30474     -206.28928    
-       620   1073.2572     -430.14364      0             -410.30534     -628.44701    
-       630   1085.4832     -430.40029      0             -410.336       -841.56198    
-       640   1075.9759     -430.29292      0             -410.40436     -689.36686    
-       650   1041.0994     -429.75238      0             -410.50849     -145.3465     
-       660   988.62785     -428.90921      0             -410.63522      634.87911    
-       670   938.2735      -428.1091       0             -410.76587      1249.558     
-       680   913.25024     -427.76689      0             -410.88619      1245.3039    
-       690   920.46581     -428.00576      0             -410.99169      503.25234    
-### NNP EW SUMMARY ### TS:        700 EW         20 EWPERSTEP  2.000e-01
-       700   946.39162     -428.5793       0             -411.086       -740.30639    
-Loop time of 6.53567 on 16 procs for 100 steps with 144 atoms
-
-Performance: 1.322 ns/day, 18.155 hours/ns, 15.301 timesteps/s
-58.1% CPU use with 16 MPI tasks x 1 OpenMP threads
-
-MPI task timing breakdown:
-Section |  min time  |  avg time  |  max time  |%varavg| %total
----------------------------------------------------------------
-Pair    | 0.0007473  | 1.5467     | 3.6938     | 114.1 | 23.67
-Neigh   | 5e-05      | 0.00027209 | 0.0007446  |   0.0 |  0.00
-Comm    | 2.0111     | 3.3363     | 5.3185     |  66.7 | 51.05
-Output  | 0.12106    | 0.15619    | 0.1869     |   4.4 |  2.39
-Modify  | 0.37588    | 1.4933     | 4.3322     | 129.8 | 22.85
-Other   |            | 0.00292    |            |       |  0.04
-
-Nlocal:              9 ave          22 max           0 min
-Histogram: 5 1 1 1 0 2 2 2 1 1
-Nghost:        191.438 ave         302 max          79 min
-Histogram: 4 0 0 4 0 0 2 2 0 4
-Neighs:              0 ave           0 max           0 min
-Histogram: 16 0 0 0 0 0 0 0 0 0
-FullNghs:          409 ave        1102 max           0 min
-Histogram: 6 1 1 0 1 3 0 2 1 1
-
-Total # of neighbors = 6544
-Ave neighs/atom = 45.444444
 Neighbor list builds = 5
 Dangerous builds not checked
-write_data check.data
-System init for write_data ...
-write_dump all custom train.lammpstrj id type x y z fx fy fz modify sort id
-run 100
-### NNP EW SUMMARY ### TS:        700 EW          0 EWPERSTEP  0.000e+00
-Per MPI rank memory allocation (min/avg/max) = 2.45 | 2.545 | 2.577 Mbytes
-   Step          Temp          E_pair         E_mol          TotEng         Press     
-       700   946.39162     -428.5793       0             -411.086       -740.30639    
-       710   973.0693      -429.16373      0             -411.17732     -2095.1469    
-       720   988.11378     -429.53904      0             -411.27454     -3314.1662    
-       730   985.48096     -429.59888      0             -411.38306     -4291.9291    
-       740   967.79969     -429.39095      0             -411.50195     -5065.4954    
-       750   945.74683     -429.10641      0             -411.62504     -5708.4038    
-       760   929.81297     -428.93181      0             -411.74496     -6317.4845    
-       770   921.68579     -428.8927       0             -411.85608     -7016.937     
-       780   915.66456     -428.87936      0             -411.95403     -7747.2649    
-       790   908.81146     -428.8331       0             -412.03444     -8379.0211    
-### NNP EW SUMMARY ### TS:        800 EW          0 EWPERSTEP  0.000e+00
-       800   901.55054     -428.75691      0             -412.09247     -8890.2106    
-Loop time of 6.97359 on 16 procs for 100 steps with 144 atoms
-
-Performance: 1.239 ns/day, 19.371 hours/ns, 14.340 timesteps/s
-58.2% CPU use with 16 MPI tasks x 1 OpenMP threads
-
-MPI task timing breakdown:
-Section |  min time  |  avg time  |  max time  |%varavg| %total
----------------------------------------------------------------
-Pair    | 0.0007747  | 1.5222     | 3.7043     | 112.7 | 21.83
-Neigh   | 5.23e-05   | 0.00026046 | 0.0004702  |   0.0 |  0.00
-Comm    | 1.6533     | 3.3462     | 5.1814     |  69.2 | 47.98
-Output  | 0.28034    | 0.3403     | 0.40388    |   6.1 |  4.88
-Modify  | 0.38786    | 1.7622     | 5.0064     | 136.5 | 25.27
-Other   |            | 0.002399   |            |       |  0.03
-
-Nlocal:              9 ave          20 max           0 min
-Histogram: 4 2 1 1 0 0 2 2 2 2
-Nghost:        191.812 ave         305 max          83 min
-Histogram: 4 0 2 2 0 0 3 1 1 3
-Neighs:              0 ave           0 max           0 min
-Histogram: 16 0 0 0 0 0 0 0 0 0
-FullNghs:      410.875 ave        1018 max           0 min
-Histogram: 5 2 1 0 0 2 2 0 3 1
-
-Total # of neighbors = 6574
-Ave neighs/atom = 45.652778
-Neighbor list builds = 5
-Dangerous builds not checked
-write_data check.data
-System init for write_data ...
-write_dump all custom train.lammpstrj id type x y z fx fy fz modify sort id
-run 100
-### NNP EW SUMMARY ### TS:        800 EW          0 EWPERSTEP  0.000e+00
-Per MPI rank memory allocation (min/avg/max) = 2.45 | 2.545 | 2.577 Mbytes
-   Step          Temp          E_pair         E_mol          TotEng         Press     
-       800   901.55054     -428.75691      0             -412.09247     -8890.2106    
-       810   893.31961     -428.63503      0             -412.12273     -9297.9784    
-       820   883.90126     -428.45744      0             -412.11923     -9630.1909    
-       830   876.92502     -428.28463      0             -412.07537     -9975.4064    
-       840   880.04769     -428.25158      0             -411.98461     -10470.178    
-       850   899.46968     -428.46756      0             -411.84158     -11205.289    
-       860   932.87709     -428.88792      0             -411.64443     -12123.294    
-       870   969.32971     -429.31541      0             -411.39812     -13009.825    
-       880   995.99739     -429.52588      0             -411.11566     -13615.075    
-       890   1004.7084     -429.38552      0             -410.81429     -13773.801    
-### NNP EW SUMMARY ### TS:        900 EW          0 EWPERSTEP  0.000e+00
-       900   994.85805     -428.89786      0             -410.5087      -13465.296    
-Loop time of 8.28907 on 16 procs for 100 steps with 144 atoms
-
-Performance: 1.042 ns/day, 23.025 hours/ns, 12.064 timesteps/s
-61.3% CPU use with 16 MPI tasks x 1 OpenMP threads
-
-MPI task timing breakdown:
-Section |  min time  |  avg time  |  max time  |%varavg| %total
----------------------------------------------------------------
-Pair    | 0.0009764  | 1.8085     | 4.8147     | 124.8 | 21.82
-Neigh   | 5.46e-05   | 0.00035551 | 0.0006944  |   0.0 |  0.00
-Comm    | 2.1371     | 4.2839     | 6.9295     |  78.7 | 51.68
-Output  | 0.26038    | 0.32224    | 0.39923    |   7.3 |  3.89
-Modify  | 0.56919    | 1.8712     | 5.8198     | 154.0 | 22.57
-Other   |            | 0.002919   |            |       |  0.04
-
-Nlocal:              9 ave          21 max           0 min
-Histogram: 5 1 1 1 0 2 0 3 2 1
-Nghost:            189 ave         304 max          83 min
-Histogram: 4 0 2 2 0 0 3 1 2 2
-Neighs:              0 ave           0 max           0 min
-Histogram: 16 0 0 0 0 0 0 0 0 0
-FullNghs:        406.5 ave        1038 max           0 min
-Histogram: 5 2 1 0 1 2 1 1 2 1
-
-Total # of neighbors = 6504
-Ave neighs/atom = 45.166667
-Neighbor list builds = 5
-Dangerous builds not checked
-write_data check.data
-System init for write_data ...
-write_dump all custom train.lammpstrj id type x y z fx fy fz modify sort id
-run 100
-### NNP EW SUMMARY ### TS:        900 EW          0 EWPERSTEP  0.000e+00
-Per MPI rank memory allocation (min/avg/max) = 2.45 | 2.545 | 2.577 Mbytes
-   Step          Temp          E_pair         E_mol          TotEng         Press     
-       900   994.85805     -428.89786      0             -410.5087      -13465.296    
-       910   972.9757      -428.19108      0             -410.20641     -12811.16     
-       920   949.45751     -427.45776      0             -409.90779     -12016.902    
-       930   933.39353     -426.86269      0             -409.60965     -11279.262    
-       940   929.06518     -426.48237      0             -409.30934     -10717.915    
-       950   936.82812     -426.32393      0             -409.00741     -10372.263    
-       960   955.43287     -426.36856      0             -408.70815     -10224.154    
-       970   982.08252     -426.57205      0             -408.41904     -10207.463    
-       980   1011.6922     -426.85003      0             -408.14971     -10216.234    
-       990   1038.3267     -427.10279      0             -407.91015     -10129.745    
-### NNP EW SUMMARY ### TS:       1000 EW          0 EWPERSTEP  0.000e+00
-      1000   1057.8867     -427.26242      0             -407.70823     -9854.5298    
-Loop time of 6.4613 on 16 procs for 100 steps with 144 atoms
-
-Performance: 1.337 ns/day, 17.948 hours/ns, 15.477 timesteps/s
-58.7% CPU use with 16 MPI tasks x 1 OpenMP threads
-
-MPI task timing breakdown:
-Section |  min time  |  avg time  |  max time  |%varavg| %total
----------------------------------------------------------------
-Pair    | 0.0007718  | 1.3935     | 3.6027     | 115.5 | 21.57
-Neigh   | 4.92e-05   | 0.00027551 | 0.0005731  |   0.0 |  0.00
-Comm    | 1.4383     | 3.1805     | 5.1278     |  71.9 | 49.22
-Output  | 0.21143    | 0.24853    | 0.28968    |   5.6 |  3.85
-Modify  | 0.48007    | 1.6366     | 4.8031     | 131.3 | 25.33
-Other   |            | 0.001946   |            |       |  0.03
-
-Nlocal:              9 ave          19 max           0 min
-Histogram: 4 2 1 1 0 0 2 2 1 3
-Nghost:            192 ave         292 max          81 min
-Histogram: 4 0 0 4 0 0 0 4 0 4
-Neighs:              0 ave           0 max           0 min
-Histogram: 16 0 0 0 0 0 0 0 0 0
-FullNghs:          406 ave         959 max           0 min
-Histogram: 4 3 1 0 0 2 2 0 1 3
-
-Total # of neighbors = 6496
-Ave neighs/atom = 45.111111
-Neighbor list builds = 5
-Dangerous builds not checked
-write_data check.data
-System init for write_data ...
-Total wall time: 0:00:32
